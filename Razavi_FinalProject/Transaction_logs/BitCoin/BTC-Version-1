@@ -1,0 +1,74 @@
+bollinger_band_version_1 Transaction logs of BTC-Version-1 is here : 
+Day open short position : 2022-06-02 00:00:00 
+upperBound < price : 93.54499816894531 
+Day open long position : 2022-06-03 00:00:00 
+price <= lowerBound : 93.45439910888672 
+sma < price : 92.59760284423828 
+portfolio : 1000.0 
+profit : -8.567962646484375 
+portfolio : 991.4320373535156 
+---------------------- 
+Day open short position : 2022-06-22 00:00:00 
+upperBound < price : 93.42500305175781 
+price < sma : 93.427001953125 
+portfolio : 991.4320373535156 
+profit : -0.019989013671875 
+portfolio : 991.4120483398438 
+----------------------
+Day open long position : 2022-07-27 00:00:00 
+price <= lowerBound : 93.05500030517578 
+Day open short position : 2022-09-22 00:00:00 
+upperBound < price : 90.42440032958984 
+price < sma : 90.9656982421875 
+portfolio : 991.4120483398438 
+profit : -5.4129791259765625 
+portfolio : 985.9990692138672 
+----------------------
+Day open long position : 2022-10-23 00:00:00 
+price <= lowerBound : 90.50959777832031 
+sma < price : 91.4083023071289 
+portfolio : 985.9990692138672 
+profit : 8.987045288085938 
+portfolio : 994.9861145019531 
+---------------------- 
+Day open short position : 2022-10-31 00:00:00 
+upperBound < price : 91.5999984741211 
+price < sma : 91.40399932861328 
+portfolio : 994.9861145019531 
+profit : 1.959991455078125 
+portfolio : 996.9461059570312 
+----------------------
+Day open long position : 2022-11-23 00:00:00 
+price <= lowerBound : 91.09500122070312 
+sma < price : 91.12529754638672 
+portfolio : 996.9461059570312 
+profit : 0.3029632568359375 
+portfolio : 997.2490692138672 
+---------------------- 
+Day open short position : 2022-12-13 00:00:00 
+upperBound < price : 91.82430267333984 
+price < sma : 92.01110076904297 
+portfolio : 997.2490692138672 
+profit : -1.86798095703125 
+portfolio : 995.3810882568359 
+----------------------
+Day open short position : 2023-01-12 00:00:00 
+upperBound < price : 92.90619659423828 
+price < sma : 92.33489990234375 
+portfolio : 995.3810882568359 
+profit : 5.7129669189453125 
+portfolio : 1001.0940551757812 
+----------------------
+Day open short position : 2023-01-18 00:00:00 
+upperBound < price : 93.10369873046875 
+price < sma : 92.56320190429688 
+portfolio : 1001.0940551757812 
+profit : 5.40496826171875 
+portfolio : 1006.4990234375 
+----------------------
+Day open long position : 2023-01-29 00:00:00 
+price <= lowerBound : 92.0999984741211 
+portfolio : 1006.4990234375 
+compound_return : 0.006499023437499973 
+percent return  : 0.0064990234375 
+sharp ratio     : -0.02540602470614946 

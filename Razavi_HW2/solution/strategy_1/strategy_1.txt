@@ -1,0 +1,199 @@
+//@version=5
+
+// ----------------------------------------------------------------------
+// STRATEGY PARAMETERS
+// ----------------------------------------------------------------------
+strategy("Ichimoku Cloud Strategy", 
+     overlay=true, 
+     calc_on_every_tick = true, // ""
+     currency= currency.USD,     
+     initial_capital=1000,
+     default_qty_type=strategy.percent_of_equity, 
+     default_qty_value=50 // The quantity of the order size. In this case 50% of account balance is invested on each trade. 
+     
+     )
+
+
+
+// ----------------------------------------------------------------------
+// DATE RNAGE
+// ----------------------------------------------------------------------
+useDateFilter = input.bool(true, title="Filter Date Range of Backtest",
+
+     group="Backtest Time Period")
+
+backtestStartDate = input.time(timestamp("1 Jan 2021"),
+
+     title="Start Date", group="Backtest Time Period",
+
+     tooltip="This start date is in the time zone of the exchange " +
+
+     "where the chart's instrument trades. It doesn't use the time " +
+
+     "zone of the chart or of your computer.")
+
+backtestEndDate = input.time(timestamp("1 Jan 2022"),
+
+     title="End Date", group="Backtest Time Period",
+
+     tooltip="This end date is in the time zone of the exchange " +
+
+     "where the chart's instrument trades. It doesn't use the time " +
+
+     "zone of the chart or of your computer.")
+
+
+
+inTradeWindow = not useDateFilter or (time >= backtestStartDate and time < backtestEndDate)
+
+
+
+
+
+// ---------------------------------------------------------------------- 
+// USER INPUTS
+// ----------------------------------------------------------------------
+int conversion_period = input.int(9, minval=1, title = 'Conversion Line Period')
+int base_period = input.int(26, minval=1, title = 'Base Line Period')
+int leding_spanB_period = input.int(52, minval=1, title = 'Leading Span B Period')
+int displacement_period = input.int(26, minval=1, title = 'Displacement Period')
+
+
+// ----------------------------------------------------------------------
+// INDICATOR CALCULATIONS
+// ----------------------------------------------------------------------
+displacement = displacement_period
+getavg(len) => math.avg(ta.lowest(len), ta.highest(len))
+conversion_line = getavg(conversion_period)
+base_line = getavg(base_period)
+leading_spanA = math.avg(conversion_line, base_line)
+leading_spanB = getavg(leding_spanB_period)
+
+
+//----------------------------------------------------------------------
+//  PLOT ICHIMOKU CLOUD COMPONENTS
+//----------------------------------------------------------------------
+plot(close, offset=-displacement, color = color.black, title = "chikou")
+plot(conversion_line, color = color.red, title="tenkan")
+plot(base_line, color = color.blue, title="kijun")
+p1 = plot(leading_spanA, offset = displacement, color=#A5D6A7, title="senkouA")
+p2 = plot(leading_spanB, offset = displacement, color=#EF9A9A, title="senkouB")
+plot(leading_spanA > leading_spanB ? leading_spanA : leading_spanB, offset = displacement, title = "Kumo Upper Line", display = display.none) 
+plot(leading_spanA < leading_spanB ? leading_spanA : leading_spanB, offset = displacement, title = "Kumo Lower Line", display = display.none) 
+fill(p1, p2, color = leading_spanA > leading_spanB ? color.rgb(67, 160, 71, 90) : color.rgb(244, 67, 54, 90))
+
+
+
+// ----------------------------------------------------------------------
+// TRADE ENTRY CONDITIONS
+// ----------------------------------------------------------------------
+cloud_top = leading_spanA[displacement] > leading_spanB[displacement] ? leading_spanA[displacement] : leading_spanB[displacement]
+cloud_bottom = leading_spanA[displacement] < leading_spanB[displacement] ? leading_spanA[displacement] : leading_spanB[displacement]
+
+// conversion_line and base_line cross strategy
+bool conversion_base_crossover = ta.crossover(conversion_line, base_line) 
+bool conversion_base_crossunder = ta.crossunder(conversion_line, base_line)
+
+// cloud break strategy
+bool cloud_break_up = ta.crossover(close, cloud_top) 
+bool cloud_break_down = ta.crossunder(close, cloud_bottom)
+
+// SpanA and SpanB cross
+bool spanA_spanB_crossover = ta.crossover(leading_spanA, leading_spanB)
+bool spanA_spanB_crossunder = ta.crossunder(leading_spanA, leading_spanB)
+
+//RSI inputs
+rsiLength = input.int(title="RSI Length", defval=14)
+rsi_over_bought = input.float(title="RSI Buy Level", defval=70.0)
+rsi_over_sold = input.float(title="RSI Sell Level", defval=30.0)
+
+
+
+// MACD inputs
+fastLength = input.int(12, minval=1, title="MACD Fast Length")
+slowLength = input.int(26, minval=1, title="MACD Slow Length")
+signalLength = input.int(9, minval=1, title="MACD Signal Length")
+
+// RSI
+rsi = ta.rsi(close, rsiLength)
+
+// MACD
+[macdLine, signalLine, _] = ta.macd(close, fastLength, slowLength, signalLength)
+
+bool ichomoku_long_condition = conversion_base_crossover or cloud_break_up or spanA_spanB_crossover
+bool ichimoku_short_condition = conversion_base_crossunder or cloud_break_down or spanA_spanB_crossunder
+
+bool rsi_long_condition = rsi < rsi_over_bought
+bool rsi_short_condition = rsi > rsi_over_sold
+
+bool macd_long_condition = macdLine > signalLine
+bool macd_short_condition = macdLine < signalLine
+
+bool long_condition = (ichomoku_long_condition and rsi_long_condition and macd_long_condition) or ta.crossover(rsi, rsi_over_bought)
+bool short_condition = ichimoku_short_condition and rsi_short_condition and macd_short_condition
+
+// Price over/under cloud condition
+bool price_over_cloud = high > cloud_top
+bool price_under_cloud = low < cloud_bottom
+
+
+
+
+bool long_trade = long_condition and price_over_cloud
+bool short_trade = short_condition and price_under_cloud
+
+
+
+
+// ----------------------------------------------------------------------
+// TRADE EXIT AND STOP LOSS INDICATOR CALCULATIONS
+// ----------------------------------------------------------------------
+
+float lastEntryPrice = strategy.opentrades.entry_price(strategy.opentrades - 1) // Get price of last entry in current position
+float equity_risk = strategy.equity * 0.02 // This sets the maximun amount of risk in any trade to 1% of current equity in the account at time of trade entry
+float long_equity_risk = lastEntryPrice - equity_risk
+float short_equity_risk = lastEntryPrice + equity_risk
+
+
+
+
+// ----------------------------------------------------------------------
+// TRADE EXIT EXECUTION WHEN CONDITION IS TRUE. 
+//  This setup handles only one open position. 
+// ----------------------------------------------------------------------
+if strategy.opentrades.entry_comment(strategy.opentrades - 1) =="Long"    
+    strategy.exit("exit long", from_entry="Long",  stop=long_equity_risk, qty_percent=100)   
+    
+// Exit short trade if stop condition true
+if strategy.opentrades.entry_comment(strategy.opentrades - 1) =="Short"   
+    strategy.exit("exit short", from_entry="Short",  stop=short_equity_risk, qty_percent=100 )   
+
+
+
+
+// ----------------------------------------------------------------------
+// TRADE ENTRY EXECUTION WHEN CONDITION IS TRUE. 
+// ----------------------------------------------------------------------
+if (long_trade and inTradeWindow)
+    strategy.close("Short")  // close any open short trades
+    strategy.cancel("Short")  // cancel any open short orders
+   
+    strategy.entry("Long", strategy.long, comment = "Long", limit = close)     
+    // strategy.exit("exit long", from_entry="Long",  stop=long_stop, qty_percent=100)  
+
+if (short_trade and inTradeWindow)
+    strategy.close("Long") // close any open long trades
+    strategy.cancel("Long")  // cancel any open long orders
+
+    strategy.entry("Short", strategy.short, comment="Short", limit = close)  
+    // strategy.exit("exit short", from_entry="Short",  stop=short_stop, qty_percent=100)   
+
+if(ta.crossunder(rsi, rsi_over_sold))
+    strategy.close("Long") // close any open long trades
+    strategy.cancel("Long")  // cancel any open long order
+
+// ----------------------------------------------------------------------
+// DRAW SIGNAL TRIANGLES
+// ----------------------------------------------------------------------
+plotshape(long_trade and inTradeWindow,  style=shape.triangleup,   color=color.green, location=location.belowbar, title="LL")
+plotshape(short_trade and inTradeWindow, style=shape.triangledown, color=color.red,   location=location.abovebar, title="SS")

@@ -1,0 +1,88 @@
+bollinger_band_version_1 Transaction logs of XOM , GOOGL , GOOG,UNH-version-1 is here : 
+Day open short position : 2022-06-02 00:00:00 
+upperBound < price : 4186.922977033476 
+price < sma : 4187.259555208211 
+portfolio : 1000.0 
+profit : -0.0 
+portfolio : 1000.0 
+----------------------
+Day open long position : 2022-06-06 00:00:00 
+price <= lowerBound : 4028.9925836170796 
+sma < price : 4151.476378132635 
+portfolio : 1000.0 
+profit : 0.0 
+portfolio : 1000.0 
+---------------------- 
+Day open short position : 2022-06-20 00:00:00 
+upperBound < price : 4249.192491401418 
+Day open long position : 2022-06-30 00:00:00 
+price <= lowerBound : 4046.4648723655855 
+sma < price : 4168.946501811605 
+portfolio : 1000.0 
+profit : 0.0 
+portfolio : 1000.0 
+---------------------- 
+Day open long position : 2022-07-21 00:00:00 
+price <= lowerBound : 4017.780786437846 
+sma < price : 4210.446939464323 
+portfolio : 1000.0 
+profit : 0.0 
+portfolio : 1000.0 
+---------------------- 
+Day open short position : 2022-07-30 00:00:00 
+upperBound < price : 4243.757018932087 
+price < sma : 4276.04625656498 
+portfolio : 1000.0 
+profit : -0.0 
+portfolio : 1000.0 
+----------------------
+Day open long position : 2022-08-24 00:00:00 
+price <= lowerBound : 4189.017500438424 
+sma < price : 4146.328814920081 
+portfolio : 1000.0 
+profit : -0.0 
+portfolio : 1000.0 
+---------------------- 
+Day open short position : 2022-09-28 00:00:00 
+upperBound < price : 4172.090610942264 
+price < sma : 4056.7498387776136 
+portfolio : 1000.0 
+profit : 0.0 
+portfolio : 1000.0 
+----------------------
+Day open short position : 2022-10-14 00:00:00 
+upperBound < price : 4251.6633448545535 
+price < sma : 4199.813278779197 
+portfolio : 1000.0 
+profit : 0.0 
+portfolio : 1000.0 
+----------------------
+Day open short position : 2022-10-26 00:00:00 
+upperBound < price : 4348.803476693738 
+price < sma : 4165.188041544306 
+portfolio : 1000.0 
+profit : 0.0 
+portfolio : 1000.0 
+----------------------
+Day open long position : 2022-10-31 00:00:00 
+price <= lowerBound : 4137.412122959628 
+sma < price : 4101.093044032954 
+portfolio : 1000.0 
+profit : -0.0 
+portfolio : 1000.0 
+---------------------- 
+Day open short position : 2022-11-29 00:00:00 
+upperBound < price : 4194.039548807637 
+price < sma : 4129.9018529147925 
+portfolio : 1000.0 
+profit : 0.0 
+portfolio : 1000.0 
+----------------------
+Day open long position : 2022-12-20 00:00:00 
+price <= lowerBound : 4070.3669318724587 
+Day open short position : 2023-01-09 00:00:00 
+upperBound < price : 4200.424796232327 
+portfolio : 1000.0 
+compound_return : 0.0 
+percent return  : 0.0 
+sharp ratio     : -0.0003073178020434554 
